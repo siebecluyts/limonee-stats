@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Limonee Statistieken</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="supabase.js" defer></script>
+  <script defer>
+    async function loadStats() {
+      const { data, error } = await supabase.from('stats').select('*');
+      const container = document.getElementById('stats');
+      if (error) return container.innerHTML = 'Fout bij laden.';
+
+      container.innerHTML = data.map(stat => `
+        <div class="card">
+          <h2>${stat.name.replace('_', ' ')}</h2>
+          <p>${stat.value}</p>
+        </div>
+      `).join('');
+    }
+
+    document.addEventListener("DOMContentLoaded", loadStats);
+  </script>
+</head>
+<body>
+  <h1>🍋 Limonee Statistieken</h1>
+  <div id="stats" class="grid"></div>
+</body>
+</html>
