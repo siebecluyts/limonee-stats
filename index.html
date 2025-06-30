@@ -16,6 +16,7 @@
         <div class="card">
           <h2>${stat.name.replace('_', ' ')}</h2>
           <p>${stat.value}</p>
+          <small>Laatst bewerkt: ${new Date(stat.last_edited).toLocaleString()}</small>
         </div>
       `).join('');
     }
