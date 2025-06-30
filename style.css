@@ -23,7 +23,7 @@ h1 {
   padding: 1rem 2rem;
   border-radius: 12px;
   box-shadow: 2px 2px 10px #fdf2c2;
-  min-width: 150px;
+  min-width: 200px;
 }
 
 form {
@@ -46,4 +46,8 @@ button {
   padding: 0.4rem 1rem;
   border-radius: 6px;
   cursor: pointer;
+}
+small {
+  color: #777;
+  font-size: 0.8rem;
 }
