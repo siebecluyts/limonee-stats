@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Statistieken</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="supabase.js" defer></script>
+  <script defer>
+    const wachtwoord = "limonee2025"; // verander dit
+
+    async function checkWachtwoord() {
+      const input = prompt("Wachtwoord?");
+      if (input !== wachtwoord) {
+        alert("Fout wachtwoord.");
+        window.location.href = "/";
+      } else {
+        loadStats();
+      }
+    }
+
+    async function loadStats() {
+      const { data, error } = await supabase.from('stats').select('*');
+      const container = document.getElementById('formContainer');
+      container.innerHTML = data.map(stat => `
+        <form onsubmit="updateStat(event, '${stat.id}')">
+          <label>${stat.name}</label>
+          <input type="number" value="${stat.value}" id="input-${stat.id}">
+          <button type="submit">Update</button>
+          <button onclick="deleteStat(event, '${stat.id}')">🗑️</button>
+        </form>
+      `).join('');
+    }
+
+    async function updateStat(e, id) {
+      e.preventDefault();
+      const value = document.getElementById(`input-${id}`).value;
+      await supabase.from('stats').update({ value: parseInt(value) }).eq('id', id);
+      loadStats();
+    }
+
+    async function deleteStat(e, id) {
+      e.preventDefault();
+      if (confirm("Verwijderen?")) {
+        await supabase.from('stats').delete().eq('id', id);
+        loadStats();
+      }
+    }
+
+    async function addStat(e) {
+      e.preventDefault();
+      const name = document.getElementById('newName').value;
+      const value = parseInt(document.getElementById('newValue').value);
+      await supabase.from('stats').insert([{ name, value }]);
+      loadStats();
+      e.target.reset();
+    }
+
+    document.addEventListener("DOMContentLoaded", checkWachtwoord);
+  </script>
+</head>
+<body>
+  <h1>Statistieken Bewerken</h1>
+  <div id="formContainer"></div>
+  <hr>
+  <form onsubmit="addStat(event)">
+    <h2>➕ Nieuwe statistiek</h2>
+    <input type="text" id="newName" placeholder="Naam" required>
+    <input type="number" id="newValue" placeholder="Waarde" required>
+    <button type="submit">Toevoegen</button>
+  </form>
+</body>
+</html>
